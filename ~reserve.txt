@@ -1,0 +1,202 @@
+
+
+        std::priority_queue<PROOF_STEP> Tasks_Thread;
+
+        Tasks_Thread.push(OutProofStep3DStdStrVec);
+
+        /*
+        // internal representation //
+        std::priority_queue<
+        std::vector<
+        std::vector<std::string>>> Tasks_Thread;
+
+        Tasks_Thread.push(
+            {
+                // {{opcode},{lhs},{rhs}} //
+                {{"root","Theorem_","0"},{"1","+","1","+","1","+","1"},{"4"}}
+            });
+        */
+
+        // *** Core Proof Engine (Loop) *** //
+        while (!Tasks_Thread.empty() && !QED)
+        {
+            PROOF_STEP TempProofStep3DStdStrVec{ Tasks_Thread.top() };
+
+            Tasks_Thread.pop();
+
+            const
+                std::vector<
+                std::vector<
+                std::string>>&Theorem{ TempProofStep3DStdStrVec.back() };
+
+            if (Theorem[LHS] == Theorem[RHS])
+            {
+                __stdlog__({ "Tentative Proof found" });
+                QED = true;
+            } else {
+                // Add new rewrites to the task queue //
+                const std::size_t& I = InProofLibrary3DStdStrVec.size();
+                for (std::size_t i = 1; i < I; ++i)
+                {
+                    std::vector<
+                    std::vector<
+                    std::string>>
+
+                    Theorem_0000 = Theorem,
+                    Theorem_0001 = Theorem,
+                    Theorem_0002 = Theorem,
+                    Theorem_0003 = Theorem,
+                    Theorem_0004 = Theorem;
+
+                    Theorem_0000[LHS].clear();
+                    Theorem_0001[LHS].clear();
+
+                    Theorem_0002[RHS].clear();
+                    Theorem_0003[RHS].clear();
+
+                    bool lhs_reduce_flag{};
+                    bool lhs_expand_flag{};
+                    bool rhs_reduce_flag{};
+                    bool rhs_expand_flag{};
+
+                    const
+                    std::vector<
+                    std::vector<std::string>>&
+
+                    Axiom = InProofLibrary3DStdStrVec[i];
+
+                    for (const std::string ax_tok : Axiom[RHS]) {
+                        std::cout << ax_tok + " ";
+                    }
+                    std::cout << std::endl;
+                    
+                    const std::string ax_tok{};
+                    std::cin >> ax_tok;
+                    
+                    // basic rewrites //
+
+                    // lhs_reduction //
+                    __stdlog__({ "lhs_reduce:" });
+                    if (lhs_reduce_flag = SubnetFound(Theorem[LHS], Axiom[LHS], Axiom[RHS], Theorem_0000[LHS]))
+                    {
+                        Theorem_0000[opcode_field][opcode] = OpcodeStruct.lhs_reduce;
+                        Theorem_0000[opcode_field][axiom_label] = axiom_name;
+                        Theorem_0000[opcode_field][guid_UInt64] = std::to_string(i);
+
+                        PROOF_STEP ProofStep = TempProofStep3DStdStrVec;
+
+                        ProofStep.emplace_back(Theorem_0000);
+
+                        Tasks_Thread.push(ProofStep);
+                    }
+
+                    // lhs_expansion //
+                    __stdlog__({ "lhs_expand:" });
+                    if (lhs_expand_flag = SubnetFound(Theorem[LHS], Axiom[RHS], Axiom[LHS], Theorem_0001[LHS]))
+                    {
+                        Theorem_0001[opcode_field][opcode] = OpcodeStruct.lhs_expand;
+                        Theorem_0001[opcode_field][axiom_label] = axiom_name;
+                        Theorem_0001[opcode_field][guid_UInt64] = std::to_string(i);
+
+                        PROOF_STEP ProofStep = TempProofStep3DStdStrVec;
+
+                        ProofStep.emplace_back(Theorem_0001);
+
+                        Tasks_Thread.push(ProofStep);
+                    }
+
+                    // rhs_reduction //
+                    __stdlog__({ "rhs_reduce:" });
+                    if (rhs_expand_flag = SubnetFound(Theorem[RHS], Axiom[LHS], Axiom[RHS], Theorem_0002[RHS]))
+                    {
+                        Theorem_0002[opcode_field][opcode] = OpcodeStruct.rhs_reduce;
+                        Theorem_0002[opcode_field][axiom_label] = axiom_name;
+                        Theorem_0002[opcode_field][guid_UInt64] = std::to_string(i);
+
+                        PROOF_STEP ProofStep = TempProofStep3DStdStrVec;
+
+                        ProofStep.emplace_back(Theorem_0002);
+
+                        Tasks_Thread.push(ProofStep);
+                    }
+
+                    // rhs_expansion //
+                    __stdlog__({ "rhs_expand:" });
+                    if (rhs_reduce_flag = SubnetFound(Theorem[RHS], Axiom[RHS], Axiom[LHS], Theorem_0003[RHS]))
+                    {
+                        Theorem_0003[opcode_field][opcode] = OpcodeStruct.rhs_expand;
+                        Theorem_0003[opcode_field][axiom_label] = axiom_name;
+                        Theorem_0003[opcode_field][guid_UInt64] = std::to_string(i);
+
+                        PROOF_STEP ProofStep = TempProofStep3DStdStrVec;
+
+                        ProofStep.emplace_back(Theorem_0003);
+
+                        Tasks_Thread.push(ProofStep);
+                    }
+
+                    // advanced rewrites //
+
+                    __stdlog__({ "lhs_reduce + rhs_reduce:" });
+                    if (lhs_reduce_flag && rhs_reduce_flag) {
+                        Theorem_0004[opcode_field][opcode] = OpcodeStruct.lhs_expand + " + " + OpcodeStruct.rhs_expand + " via ";
+                        Theorem_0004[opcode_field][axiom_label] = axiom_name;
+                        Theorem_0004[opcode_field][guid_UInt64] = std::to_string(i);
+                        Theorem_0004[LHS] = Theorem_0000[LHS];
+                        Theorem_0004[RHS] = Theorem_0003[RHS];
+
+                        PROOF_STEP ProofStep = TempProofStep3DStdStrVec;
+
+                        ProofStep.emplace_back(Theorem_0004);
+
+                        Tasks_Thread.push(ProofStep);
+                    }
+
+                    __stdlog__({ "lhs_reduce + rhs_expand:" });
+                    if (lhs_reduce_flag && rhs_expand_flag) {
+                        Theorem_0004[opcode_field][opcode] = OpcodeStruct.lhs_expand + " + " + OpcodeStruct.rhs_expand + " via ";
+                        Theorem_0004[opcode_field][axiom_label] = axiom_name;
+                        Theorem_0004[opcode_field][guid_UInt64] = std::to_string(i);
+                        Theorem_0004[LHS] = Theorem_0000[LHS];
+                        Theorem_0004[RHS] = Theorem_0002[RHS];
+
+                        PROOF_STEP ProofStep = TempProofStep3DStdStrVec;
+
+                        ProofStep.emplace_back(Theorem_0004);
+
+                        Tasks_Thread.push(ProofStep);
+                    }
+
+                    __stdlog__({ "lhs_expand + rhs_reduce:" });
+                    if (lhs_expand_flag && rhs_reduce_flag) {
+                        Theorem_0004[opcode_field][opcode] = OpcodeStruct.lhs_expand + " + " + OpcodeStruct.rhs_expand + " via ";
+                        Theorem_0004[opcode_field][axiom_label] = axiom_name;
+                        Theorem_0004[opcode_field][guid_UInt64] = std::to_string(i);
+                        Theorem_0004[LHS] = Theorem_0001[LHS];
+                        Theorem_0004[RHS] = Theorem_0003[RHS];
+
+                        PROOF_STEP ProofStep = TempProofStep3DStdStrVec;
+
+                        ProofStep.emplace_back(Theorem_0004);
+
+                        Tasks_Thread.push(ProofStep);
+                    }
+
+                    __stdlog__({ "lhs_expand + rhs_expand:" });
+                    if (lhs_expand_flag && rhs_expand_flag) {
+                        Theorem_0004[opcode_field][opcode] = OpcodeStruct.lhs_expand + " + " + OpcodeStruct.rhs_expand + " via ";
+                        Theorem_0004[opcode_field][axiom_label] = axiom_name;
+                        Theorem_0004[opcode_field][guid_UInt64] = std::to_string(i);
+                        Theorem_0004[LHS] = Theorem_0001[LHS];
+                        Theorem_0004[RHS] = Theorem_0002[RHS];
+
+                        PROOF_STEP ProofStep = TempProofStep3DStdStrVec;
+
+                        ProofStep.emplace_back(Theorem_0004);
+
+                        Tasks_Thread.push(ProofStep);
+                    }
+                } // end for (...Axiom : InAxiomsStdStrVec)
+            } // end test (...Theorem[LHS] == Theorem[RHS])
+            __stdlog__({ "Next Round..." });
+        } // end for (...!Tasks_Thread.empty() && !QED))
