@@ -1,5 +1,111 @@
-
-
+//
+					if (LocalSubnetFoundFlag)
+					{
+						for (const std::string ax_tok : Axiom_Dest) {
+							Theorem_Dest.emplace_back(ax_tok);
+							__stdlog__({ ax_tok + " " }, false);
+						}
+						SubnetFoundFlag = true;
+						__stdlog__({ "" });
+					}
+//
+        __stdlog__({"Theorem_Src = {"}, false);
+        for (const std::string& z : Theorem_Src)
+        {
+            __stdlog__({ "\"",z,"\","}, false);
+        }
+        __stdlog__({"}"});
+        
+        __stdlog__({"Axiom_Src = {"}, false);
+        for (const std::string& z : Axiom_Src)
+        {
+            __stdlog__({ "\"",z,"\","}, false);
+        }
+        __stdlog__({"}"});
+		
+		__stdlog__({ "ax_size:", std::to_string(ax_size), ", th_size:", std::to_string(th_size) });
+//
+            __stdlog__({"{"}, false);
+            for (const std::vector<std::string>& y : Theorem_0002)
+            {
+                __stdlog__({"{"}, false);
+                for (const std::string& z : y)
+                {
+                    __stdlog__({ "\"",z,"\","}, false);
+                }
+                __stdlog__({"}"}, false);
+            }
+            __stdlog__({"}"});
+//
+        __stdlog__({"{"}, false);
+        for (const std::vector<std::string>& y : Theorem)
+        {
+            __stdlog__({"{"}, false);
+            for (const std::string& z : y)
+            {
+                __stdlog__({ "\"",z,"\","}, false);
+            }
+            __stdlog__({"}"}, false);
+        }
+        __stdlog__({"}"});
+//
+        __stdlog__({"{"}, false);
+        for (const std::vector<std::string>& y : Axiom)
+        {
+            __stdlog__({"{"}, false);
+            for (const std::string& z : y)
+            {
+                __stdlog__({ "\"",z,"\","}, false);
+            }
+            __stdlog__({"}"}, false);
+        }
+        __stdlog__({"}"});
+//
+        for(const std::vector<std::vector<std::string>>& x : TempProofStep3DStdStrVec)
+        {
+            __stdlog__({"{"}, false);
+            for (const std::vector<std::string>& y : x)
+            {
+                __stdlog__({"{"}, false);
+                for (const std::string& z : y)
+                {
+                    __stdlog__({ "\"",z,"\"," }, false);
+                }
+                __stdlog__({"}"}, false);
+            }
+            __stdlog__({"}"});
+        }
+//
+        for(const std::vector<std::vector<std::string>>& x : OutProofStep3DStdStrVec)
+        {
+            __stdlog__({"{"}, false);
+            for (const std::vector<std::string>& y : x)
+            {
+                __stdlog__({"{"}, false);
+                for (const std::string& z : y)
+                {
+                    __stdlog__({ "\"",z,"\","}, false);
+                }
+                __stdlog__({"}"}, false);
+            }
+            __stdlog__({"}"});
+        }
+//
+        for(const std::vector<std::vector<std::string>>& x : OutProofStep3DStdStrVec)
+        {
+            __stdlog__({"{"}, false);
+            for (const std::vector<std::string>& y : x)
+            {
+                __stdlog__({"{"}, false);
+                for (const std::string& z : y)
+                {
+                    __stdlog__({ "\"",z,"\","}, false);
+                }
+                __stdlog__({"}"}, false);
+            }
+            __stdlog__({"}"});
+        }
+//
         std::priority_queue<PROOF_STEP> Tasks_Thread;
 
         Tasks_Thread.push(OutProofStep3DStdStrVec);
