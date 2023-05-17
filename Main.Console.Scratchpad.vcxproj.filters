@@ -15,8 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.Console.Scratchpad.h">
+    <ClCompile Include="Main.Console.Scratchpad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="~reserve.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="BugFix.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="Notes.txt">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
