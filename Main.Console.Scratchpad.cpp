@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <chrono>
-#include <Euclid.h>
+#include <Euclid.TestCase.246.h>
 
 int main()
 {
