@@ -1,0 +1,12 @@
+SYMP: Euclid.h stackoverflow
+SOLU: if (ax_size <= Theorem_Dest.size()) >> if (ax_size <= Theorem_Src.size()) // Theorem_Dest.size() == 0 //
+
+SYMP: Theorem[RHS]; /* OK */ Axiom[RHS]; /* CRASH */
+SOLU: 
+	Theorem = {{"root","Theorem_","0"}{"1","+","1","+","1","+","1",}{"4"}} // OutProofStep3DStdStrVec[0].insert(OutProofStep3DStdStrVec[0].begin(),{ "root", theorem_name, "0" }); LHS = 1; RHS = 2;
+	Axiom = {{"2","+","2"}{"4"}}
+
+	>>
+
+	Theorem = {{"1","+","1","+","1","+","1"}{"4"},{"root","Theorem_","0"}} // OutProofStep3DStdStrVec[0].emplace_back({ "root", theorem_name, "0" }); LHS = 0; RHS = 1;
+	Axiom = {{"2","+","2"}{"4"}}
