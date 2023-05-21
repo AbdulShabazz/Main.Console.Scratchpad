@@ -1,13 +1,16 @@
 #include <iostream>
 #include <string>
 #include <chrono>
-#include <Euclid.TestCase.246.h>
+//#include <Euclid.TestCase.246.h>
+#include <Euclid.15.No.Strings.h>
 
 int main()
 {
     Euclid_Prover::__stdtracein__("Main");
 
     const auto start_time_chrono = std::chrono::high_resolution_clock::now();
+
+    std::cout << "Entering module..." << std::endl;
 
     Euclid_Prover::Prove();
 
