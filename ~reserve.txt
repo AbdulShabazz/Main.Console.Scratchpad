@@ -1,3 +1,55 @@
+
+//
+		auto PopulateCallGraph =
+			[
+				&
+			]
+		( ) -> void
+		{
+			__stdtracein__("PopulateCallGraph");
+			const BigInt128_t& LHSPrimaryKeyUInt64 = Theorem_UInt64Vec[LHS];
+			const BigInt128_t& RHSPrimaryKeyUInt64 = Theorem_UInt64Vec[RHS];
+			for (std::vector<BigInt128_t>& Axiom_i : Axioms_UInt64Vec)
+			{
+				const BigInt128_t& LHSAxiom_iPrimaryKeyUInt64 = Axiom_i[LHS];
+				const BigInt128_t& RHSAxiom_iPrimaryKeyUInt64 = Axiom_i[RHS];
+
+				const bool SubnetFound = (
+					( LHSPrimaryKeyUInt64 % LHSAxiom_iPrimaryKeyUInt64 == 0 ) ||
+					( LHSPrimaryKeyUInt64 % RHSAxiom_iPrimaryKeyUInt64 == 0 ) );
+
+				if (SubnetFound)
+				{
+					CallGraphUInt64Map[Theorem_UInt64Vec[guid_UInt64]][Axiom_i[guid_UInt64]] = true;
+					//CallGraphUInt64Map[Axiom_i[guid_UInt64]][Theorem_UInt64Vec[guid_UInt64]] = true;
+					//std::cout << "CallGraphUInt64Map[" << Theorem_UInt64Vec[guid_UInt64] << "][" << Axiom_i[guid_UInt64] << "] = " << CallGraphUInt64Map[Theorem_UInt64Vec[guid_UInt64]][Axiom_i[guid_UInt64]] << std::endl;
+					//std::cout << "CallGraphUInt64Map[" << Axiom_i[guid_UInt64] << "][" << Theorem_UInt64Vec[guid_UInt64] << "] = " << CallGraphUInt64Map[Axiom_i[guid_UInt64]][Theorem_UInt64Vec[guid_UInt64]] << std::endl;
+				}
+					//CallGraphUInt64Map.emplace(Theorem_UInt64Vec[guid_UInt64], std::unordered_map<BigInt128_t, bool>{{Axiom_i[guid_UInt64], true}});
+
+				for (std::vector<BigInt128_t>& Axiom_j : Axioms_UInt64Vec)
+				{
+					const BigInt128_t& LHSAxiom_jPrimaryKeyUInt64 = Axiom_j[LHS];
+					const BigInt128_t& RHSAxiom_jPrimaryKeyUInt64 = Axiom_j[RHS];
+
+					const bool SubnetFound = (
+						( LHSAxiom_iPrimaryKeyUInt64 % LHSAxiom_jPrimaryKeyUInt64 == 0 ) ||
+						( LHSAxiom_iPrimaryKeyUInt64 % RHSAxiom_jPrimaryKeyUInt64 == 0 ));
+
+					if (/*Axiom_i[guid_UInt64]!= Axiom_j[guid_UInt64] && */SubnetFound)
+					{
+						CallGraphUInt64Map[Axiom_i[guid_UInt64]][Axiom_j[guid_UInt64]] = true;
+						//CallGraphUInt64Map[Axiom_j[guid_UInt64]][Axiom_i[guid_UInt64]] = true;
+						//std::cout << "CallGraphUInt64Map[" << Axiom_i[guid_UInt64] << "][" << Axiom_j[guid_UInt64] << "] = " << CallGraphUInt64Map[Axiom_i[guid_UInt64]][Axiom_j[guid_UInt64]] << std::endl;
+						//std::cout << "CallGraphUInt64Map[" << Axiom_j[guid_UInt64] << "][" << Axiom_i[guid_UInt64] << "] = " << CallGraphUInt64Map[Axiom_j[guid_UInt64]][Axiom_i[guid_UInt64]] << std::endl;
+					}
+						//CallGraphUInt64Map.emplace(Axiom_i[guid_UInt64],std::unordered_map<BigInt128_t, bool>{{Axiom_j[guid_UInt64], true}});
+				}
+			}
+			__stdtraceout__("PopulateCallGraph");
+		};
+
+		PopulateCallGraph();
 //
 					if (LocalSubnetFoundFlag)
 					{
