@@ -1,4 +1,20 @@
 
+
+		template <typename T>
+		typename std::enable_if<!std::is_same<T, std::vector<typename T::value_type>>::value, void>::type
+			PrintPath(const T& element) {
+			std::cout << " " << element << " ";
+		};
+
+		template <typename T>
+		typename std::enable_if<std::is_same<T, std::vector<typename T::value_type>>::value, void>::type
+			PrintPath(const T& vector) {
+			std::cout << "{ ";
+			for (const auto& element : vector) {
+				PrintPath(element);
+			}
+			std::cout << " }";
+		};
 //
 		auto PopulateCallGraph =
 			[
