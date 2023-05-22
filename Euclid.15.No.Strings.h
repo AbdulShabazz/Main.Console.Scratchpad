@@ -10,7 +10,11 @@
 #include <mutex>
 #include <thread>
 
+#include <boost/multiprecision/cpp_int.hpp>
+
 namespace Euclid_Prover {
+
+    using BigInt512_t = boost::multiprecision::cpp_int;
 
 	//#define IOSTREAM_INCLUDED // Comment out to disable all std::cout messages. //
 
@@ -23,7 +27,7 @@ namespace Euclid_Prover {
 		// Check if the iostream library is included.
         #ifdef IOSTREAM_INCLUDED
 		auto it = msg.begin();
-		auto IT = msg.end();
+        const auto& IT = msg.end();
 		std::cout << *it;
 		++it; // Advance the iterator by 1 position //
 		for (it; it != IT; ++it)
@@ -40,11 +44,11 @@ namespace Euclid_Prover {
 		// Check if the iostream library is included.
 	    #ifdef IOSTREAM_INCLUDED
 		TraceCallStackStdStrVec.emplace_back(msg);
-		const std::size_t I = TraceCallStackStdStrVec.size();
+		const BigInt512_t& I = TraceCallStackStdStrVec.size();
 		std::cout << TraceCallStackStdStrVec[0];
-		for (std::size_t i = 1; i < I; ++i)
+		for (BigInt512_t i = 1; i < I; ++i)
 		{
-			std::cout << " >> " << TraceCallStackStdStrVec[i];
+            std::cout << " >> " << TraceCallStackStdStrVec[std::size_t(i)];
 		}
 		std::cout << std::endl;
 	    #endif
@@ -55,11 +59,11 @@ namespace Euclid_Prover {
 		// Check if the iostream library is included.
 	#ifdef IOSTREAM_INCLUDED
 		TraceCallStackStdStrVec.pop_back();
-		const std::size_t I = TraceCallStackStdStrVec.size();
+		const BigInt512_t& I = TraceCallStackStdStrVec.size();
 		std::string buff{ TraceCallStackStdStrVec[0] };
-		for (std::size_t i = 1; i < I; ++i)
+		for (BigInt512_t i = 1; i < I; ++i)
 		{
-			buff.append(" >> " + TraceCallStackStdStrVec[i]);
+			buff.append(" >> " + TraceCallStackStdStrVec[std::size_t(i)]);
 		}
 		std::cout << buff << " << " << msg << std::endl;
 		std::cout << buff << std::endl;
@@ -88,36 +92,35 @@ namespace Euclid_Prover {
 			Windows 11+ x86i64
 	*/
 	
-	void PrintPath(const std::vector<std::vector<std::vector<std::size_t>>>& OutProofStep3DStdStrVec)
+	void PrintPath(const std::vector<std::vector<std::vector<BigInt512_t>>>& OutProofStep3DStdStrVec)
 	{
 		__stdtracein__("PrintPath");
-	    for (const std::vector<std::vector<std::size_t>>& x : OutProofStep3DStdStrVec)
+	    for (const std::vector<std::vector<BigInt512_t>>& x : OutProofStep3DStdStrVec)
 	    {
-	        __stdlog__({ "{" }, false);
-    	    for (const std::vector<std::size_t>& y : x)
+	        std::cout << "{";
+    	    for (const std::vector<BigInt512_t>& y : x)
     	    {
-    	        __stdlog__({ "{" }, false);
-    	       for (const std::size_t& z : y)
+    	        std::cout << "{";
+    	       for (const BigInt512_t& z : y)
         	    {
-        	        __stdlog__({ " ", std::to_string(z), " " }, false);
+                   std::cout << " " << std::to_string(std::size_t(z)) << " " ;
         	    } 
-    	        __stdlog__({ "}, " }, false);
+    	        std::cout << "} ";
     	    }
-	        __stdlog__({ "}" });
+            std::cout << "}" << std::endl;
 	    }
 		__stdtraceout__("PrintPath");
 	}
 	
-	std::string ComputeHash(const std::vector<std::size_t>& Theorem_Src)
+	std::string ComputeHash(const std::vector<BigInt512_t>& Theorem_Src)
 	{
 		__stdtracein__("ComputeHash");
-		std::string retbuff {"{"};
-		
-	       for (const std::size_t& z : Theorem_Src)
-    	    {
-    	        retbuff += std::to_string(z);
-    	    }
-            
+
+		std::string retbuff {"{"};		
+        for (const BigInt512_t& z : Theorem_Src)
+        {
+            retbuff += std::to_string(std::size_t(z));
+        }            
         retbuff += "}";
 	    
 		__stdtraceout__("ComputeHash");
@@ -126,31 +129,31 @@ namespace Euclid_Prover {
 
 	bool SubnetFound
 	(
-		const std::vector<std::size_t>& Theorem_Src,
-		const std::vector<std::size_t>& Axiom_Src,
-		const std::vector<std::size_t>& Axiom_Dest,
-		std::vector<std::size_t>& Theorem_Dest
+		const std::vector<BigInt512_t>& Theorem_Src,
+		const std::vector<BigInt512_t>& Axiom_Src,
+		const std::vector<BigInt512_t>& Axiom_Dest,
+		std::vector<BigInt512_t>& Theorem_Dest
 	)
 	{
 		__stdtracein__("SubnetFound");
-		const std::size_t& th_size = Theorem_Src.size();
-		const std::size_t& ax_size = Axiom_Src.size();
+		const BigInt512_t& th_size = Theorem_Src.size();
+		const BigInt512_t& ax_size = Axiom_Src.size();
 
 		bool SubnetFoundFlag{};
 		
 		if (ax_size <= th_size)
 		{
-			std::size_t i_ax{};
+			BigInt512_t i_ax{};
 
-			for (const std::size_t& th_tok : Theorem_Src)
+			for (const BigInt512_t& th_tok : Theorem_Src)
 			{
-			    const bool MatchFoundFlag = (!SubnetFoundFlag && (Axiom_Src[i_ax] == th_tok));
+                const bool MatchFoundFlag = ( !SubnetFoundFlag && ( Axiom_Src[std::size_t(i_ax)] == th_tok ) );
 				if (MatchFoundFlag) {
 					++i_ax;
 					const bool LocalSubnetFoundFlag = ( i_ax == ax_size );
 					if (LocalSubnetFoundFlag)
 					{
-						for (const std::size_t ax_tok : Axiom_Dest) {
+						for (const BigInt512_t ax_tok : Axiom_Dest) {
 							Theorem_Dest.emplace_back(ax_tok);
 						}
                         __stdlog__({"SubnetFound!"});
@@ -181,67 +184,33 @@ namespace Euclid_Prover {
         constexpr int axiom_label = 1;
         constexpr int guid_UInt64 = 2;
 
-        const std::size_t axiom_name = 10003;//"Axiom_";
-        const std::size_t theorem_name = 10002;//"Theorem_";
+        const BigInt512_t axiom_name = 10003;//"Axiom_";
+        const BigInt512_t theorem_name = 10002;//"Theorem_";
 
         class OPCODESTRUCT {
         public:
-            const std::size_t lhs_reduce = 10004;//"lhs_reduce ";
-            const std::size_t lhs_expand = 10005;//"lhs_expand ";
-            const std::size_t rhs_reduce = 10006;//"rhs_reduce ";
-            const std::size_t rhs_expand = 10007;//"rhs_expand ";
+            const BigInt512_t lhs_reduce = 10004;//"lhs_reduce ";
+            const BigInt512_t lhs_expand = 10005;//"lhs_expand ";
+            const BigInt512_t rhs_reduce = 10006;//"rhs_reduce ";
+            const BigInt512_t rhs_expand = 10007;//"rhs_expand ";
         };
 
         OPCODESTRUCT OpcodeStruct;
 
-        using PROOF_STEP = std::vector<std::vector<std::vector<std::size_t>>>;
-        using PROOF_REWRITE = std::vector<std::vector<std::size_t>>;
+        using PROOF_STEP = std::vector<std::vector<std::vector<BigInt512_t>>>;
+        using PROOF_REWRITE = std::vector<std::vector<BigInt512_t>>;
 
         // input //
         
-        std::vector<std::vector<std::vector<std::size_t>>> InProofLibrary3DStdStrVec =
-        
-        {
+        std::vector<std::vector<std::vector<BigInt512_t>>> InProofLibrary3DStdStrVec = {
             // {{lhs},{rhs}} // 
             /*
-            {{"1", "+", "1", "+", "1", "+", "1"},{"4"}},
-            {{"1", "+", "1"},{"2"}},
-            {{"2", "+", "2"},{"4"}}
+            {{1, 10001, 1, 10001, 1, 10001, 1},{4}},
+            {{1, 10001, 1},{2}},
+            {{2, 10001, 2},{4}}
             */
-             {
-                 {
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001, 1, 10001,
-         1, 10001, 1, 10001, 1
-     }, // lhs
-     {
-         246
-     } }, // rhs
+            {{1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1,10001,1
+},{246}},
 { { 1, 10001, 1 }, { 2 } },
 { { 1, 10001, 2 }, { 3 } },
 { { 2, 10001, 2 }, { 4 } },
@@ -487,14 +456,15 @@ namespace Euclid_Prover {
 { { 122, 10001, 122 }, { 244 } },
 { { 1, 10001, 244 }, { 245 } },
 { { 123, 10001, 123 }, { 246 } }
-        };
+
+}; // PrintPath(InProofLibrary3DStdStrVec);
         
         PROOF_STEP OutProofStep3DStdStrVec;
 
         OutProofStep3DStdStrVec.emplace_back(InProofLibrary3DStdStrVec[0]);
         OutProofStep3DStdStrVec[0].push_back ({ 0, theorem_name, 0 });
         
-        PrintPath(OutProofStep3DStdStrVec);
+        //PrintPath(OutProofStep3DStdStrVec);
 
         /*
             // internal representation //
@@ -502,8 +472,8 @@ namespace Euclid_Prover {
             std::vector<
             std::vector<std::string>>> OutProofStep3DStdStrVec =
             {
-                // {{opcode},{lhs},{rhs}} //
-                {{"1","+","1","+","1","+","1"},{"4"},{"root","Theorem_","0"}}
+                // {{lhs},{rhs},{opcode}} //
+                {{1,10001,1,10001,1,10001,1},{4},{0,10002,0}} // {{1,+,1,+,1,+,1},{4},{root,Theorem_,0}}
             };
         */
 
@@ -527,12 +497,12 @@ namespace Euclid_Prover {
             
             const PROOF_REWRITE& Theorem{ TempProofStep3DStdStrVec.back() };
             
-            const std::size_t I = InProofLibrary3DStdStrVec.size();
-            for(std::size_t i = 1; i < I; ++i)
+            const BigInt512_t I = InProofLibrary3DStdStrVec.size();
+            for(BigInt512_t i = 1; i < I; ++i)
             {
                 const
                 std::vector<
-                std::vector<std::size_t>>& Axiom = InProofLibrary3DStdStrVec[i];
+                    std::vector<BigInt512_t>>& Axiom = InProofLibrary3DStdStrVec[std::size_t(i)];
                 
                 PROOF_REWRITE
                 Theorem_0000{Theorem},
@@ -572,7 +542,7 @@ namespace Euclid_Prover {
 
 					// Attempt fast-forward //
 					if (RHSRouteHistoryMap.find(HashKeyStdStr) != RHSRouteHistoryMap.end()) {
-						//std::cout << "Proof found in Module_0000 via Fast-Forward (FF)" << " {" << Theorem_0000[LHS].str() << ", " << Theorem_0000[LHS].str() << "}" << std::endl;
+                        std::cout << "Proof found in Module_0000 via Fast-Forward (FF)" << std::endl;
 						__stdlog__({ "Proof found in Module_0000 via Fast-Forward (FF)" });
 						auto iProofStep2DStdStrVec = RHSRouteHistoryMap[HashKeyStdStr].begin();
 						const auto iProofStepEND = RHSRouteHistoryMap[HashKeyStdStr].end();
@@ -612,7 +582,7 @@ namespace Euclid_Prover {
 
 					// Attempt fast-forward //
 					if (RHSRouteHistoryMap.find(HashKeyStdStr) != RHSRouteHistoryMap.end()) {
-						//std::cout << "Proof found in Module_0001 via Fast-Forward (FF)" << " {" << Theorem_0000[LHS].str() << ", " << Theorem_0000[LHS].str() << "}" << std::endl;
+                        std::cout << "Proof found in Module_0001 via Fast-Forward (FF)" << std::endl;
 						__stdlog__({ "Proof found in Module_0001 via Fast-Forward (FF)" });
 						auto iProofStep2DStdStrVec = RHSRouteHistoryMap[HashKeyStdStr].begin();
 						const auto iProofStepEND = RHSRouteHistoryMap[HashKeyStdStr].end();
@@ -652,7 +622,7 @@ namespace Euclid_Prover {
 
 					// Attempt fast-forward //
 					if (LHSRouteHistoryMap.find(HashKeyStdStr) != LHSRouteHistoryMap.end()) {
-						//std::cout << "Proof found in Module_0002 via Fast-Forward (FF)" << " {" << Theorem_0000[LHS].str() << ", " << Theorem_0000[LHS].str() << "}" << std::endl;
+                        std::cout << "Proof found in Module_0002 via Fast-Forward (FF)" << std::endl;
 						__stdlog__({ "Proof found in Module_0002 via Fast-Forward (FF)" });
 						auto iProofStep2DStdStrVec = LHSRouteHistoryMap[HashKeyStdStr].begin();
 						const auto iProofStepEND = LHSRouteHistoryMap[HashKeyStdStr].end();
@@ -692,7 +662,7 @@ namespace Euclid_Prover {
 
 					// Attempt fast-forward //
 					if (LHSRouteHistoryMap.find(HashKeyStdStr) != LHSRouteHistoryMap.end()) {
-						//std::cout << "Proof found in Module_0003 via Fast-Forward (FF)" << " {" << Theorem_0000[LHS].str() << ", " << Theorem_0000[LHS].str() << "}" << std::endl;
+                        std::cout << "Proof found in Module_0003 via Fast-Forward (FF)" << std::endl;
 						__stdlog__({ "Proof found in Module_0003 via Fast-Forward (FF)" });
 						auto iProofStep2DStdStrVec = LHSRouteHistoryMap[HashKeyStdStr].begin();
 						const auto iProofStepEND = LHSRouteHistoryMap[HashKeyStdStr].end();
