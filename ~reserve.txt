@@ -1,5 +1,86 @@
 
+				/*
+				std::vector<std::string> TempAxiomCommitLog_StdStrVec {};
 
+				std::vector<
+					std::vector<
+					std::vector<
+					std::string>>>
+					OutTheoremStdStrVec;
+				*/
+//
+		/*
+		void PrintPath(const std::vector<std::vector<std::string>>& OutAxiomCommitLogStdStrVecRef)
+		{
+			const std::size_t I = OutAxiomCommitLogStdStrVecRef.size();
+			std::cout << "AxiomCommitLogStdSrVec = {\n";
+			for (std::size_t i = 0; i < I; ++i)
+			{
+				std::cout << "{ ";
+				bool Delimited{};
+				for (const std::string& str : OutAxiomCommitLogStdStrVecRef[i])
+				{
+					std::cout << ( Delimited ? ", " : "" ) << str;
+					Delimited = true;
+				}
+				if (i + 1 < I)
+				{
+					std::cout << " },\n";
+				} else {
+					std::cout << " }\n";
+				}
+			}
+			std::cout << "}\n";
+		}
+
+		void PrintPath(const std::vector<
+			std::vector<
+			std::vector<
+			std::vector<
+			std::string>>>>&OutProofStep4DStdStrVec)
+		{
+			std::cout << "Proofstep = {\n";
+			for (size_t w = 0; w < OutProofStep4DStdStrVec.size(); ++w)
+			{
+				std::cout << "{\n";
+				for (size_t x = 0; x < OutProofStep4DStdStrVec[w].size(); ++x)
+				{
+					std::cout << "{\n";
+					const std::size_t I = OutProofStep4DStdStrVec[w][x].size();
+					for (std::size_t i = 0; i < I; ++i)
+					{
+						std::cout << "{ ";
+						bool Delimited{};
+						for (const std::string& str : OutProofStep4DStdStrVec[w][x][i])
+						{
+							std::cout << ( Delimited ? ", " : "" ) << str;
+							Delimited = true;
+						}
+						if (i + 1 < I)
+						{
+							std::cout << " },\n";
+						} else {
+							std::cout << " }";
+						}
+					}
+					if (x + 1 < OutProofStep4DStdStrVec[w].size())
+					{
+						std::cout << "\n},\n";
+					} else {
+						std::cout << "\n}\n";
+					}
+				}
+				if (w + 1 < OutProofStep4DStdStrVec.size())
+				{
+					std::cout << "},\n";
+				} else {
+					std::cout << "}\n";
+				}
+			}
+			std::cout << "}\n";
+		}
+*/
+//
 		template <typename T>
 		typename std::enable_if<!std::is_same<T, std::vector<typename T::value_type>>::value, void>::type
 			PrintPath(const T& element) {
