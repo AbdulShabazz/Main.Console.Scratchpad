@@ -442,12 +442,28 @@ namespace Euclid_Prover
 
 		std::vector<BigInt128_t> Theorem_UInt64Vec;
 
+		auto Power = [] (BigInt128_t base, BigInt128_t exponent) -> BigInt128_t
+		{
+			BigInt128_t result = 1;
+			while (exponent > 0) {
+				// If exponent is odd
+				if (exponent & 1) {
+					result = result * base;
+				}
+				// halve the exponent
+				exponent = exponent >> 1;
+				base = base * base;
+			}
+			return result;
+		};
+
 		auto PopulateTheoremVec =
 			[
 				&
 			]
 		( ) -> void
 		{
+			BigInt128_t i {1};
 			__stdtracein__("PopulateTheoremVec");
 			for (const std::vector<std::string>& Subnet_StdStrVec : InTheoremStdStrVec)
 			{
@@ -467,6 +483,7 @@ namespace Euclid_Prover
 						PrimeProduct_UInt64Vec *= p;
 						__stdlog__({ "New Prime: ", Symbol_StdStr ," <- ",p.str(),", PrimeProduct: ", PrimeProduct_UInt64Vec.str() });
 					}
+					++i;
 				}
 				__stdlog__({ "" });
 				Theorem_UInt64Vec.emplace_back(PrimeProduct_UInt64Vec);
@@ -505,6 +522,7 @@ namespace Euclid_Prover
 						Subnet_StdStrVec
 					)
 				{
+					BigInt128_t i {1};
 					BigInt128_t PrimeProduct_UInt64Vec{ 1 };
 					for (const std::string& Symbol_StdStr : Expression_StdStrVec)
 					{
@@ -521,6 +539,7 @@ namespace Euclid_Prover
 							PrimeProduct_UInt64Vec *= p;
 							__stdlog__({ "New Prime: ", Symbol_StdStr ," <- ",p.str(),", PrimeProduct: ", PrimeProduct_UInt64Vec.str() });
 						}
+						++i;
 					}
 					__stdlog__({ "" });
 					TempInnerAxiom_UInt64Vec.emplace_back(PrimeProduct_UInt64Vec);
@@ -1108,8 +1127,8 @@ namespace Euclid_Prover
 	template <>
 	struct BracketTraits<BracketType::CurlyBraces>
 	{
-		static constexpr std::string Open = "{";
-		static constexpr std::string Close = "}";
+		static constexpr const std::string Open = "{";
+		static constexpr const std::string Close = "}";
 	};
 
 	template <>
