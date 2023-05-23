@@ -249,10 +249,7 @@ print_path(const T& vector) noexcept {
 			{
 				{ "{", "PlayerCharacterSideKick", "}", "IsIn", "{", "QuadUtilityVehicle", "}" }, // lhs
 				{ "{", "QuadUtilityVehicle", "}", "and", "{", "VehicleDriveDisabled", "}" } // rhs
-			},
-
-			ProofStep4DStdStrVec,
-			AxiomCommitLogStdStrVec
+			}
 		);
 
 		/ *
