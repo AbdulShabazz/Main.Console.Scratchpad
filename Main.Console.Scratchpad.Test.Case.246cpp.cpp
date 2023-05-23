@@ -2,27 +2,9 @@
 #include <string>
 #include <chrono>
 #include <Euclid.h>
-//#include <Euclid.TestCase.246.h>
-//#include <Euclid.16.Boost.Support.No.Strings.h>
 
 int main()
 {
-	std::vector<
-		std::vector<
-		std::vector<
-		std::vector<
-		std::string>>>>
-
-		// Instantiate ProofStep4DStdStrVec[proof][step][lhs/rhs][token]
-		ProofStep4DStdStrVec;
-
-	std::vector<
-		std::vector<
-		std::string>>
-
-		// Instantiate AxiomCommitLogStdStrVec[proof][step]
-		AxiomCommitLogStdStrVec;
-
 	using EuclidProverClass =
 
 		Euclid_Prover::EuclidProver<
@@ -318,10 +300,7 @@ int main()
 	 {
 		 "246"
 	 } // rhs
-		},
-
-		ProofStep4DStdStrVec,
-		AxiomCommitLogStdStrVec
+		}
 	);
 
 	const auto start_time_chrono = std::chrono::high_resolution_clock::now();
@@ -336,12 +315,12 @@ int main()
 	if (Euclid.ProofFoundFlag)
 	{
 		std::cout << "Proof Found. (QED)" << std::endl;
-		Euclid.PrintPath(ProofStep4DStdStrVec);
-		Euclid.PrintPath(AxiomCommitLogStdStrVec);
-	} else if (ProofStep4DStdStrVec.size()) {
+		Euclid.PrintPath(Euclid.ProofStep3DStdStrVec);
+		Euclid.PrintPath(Euclid.AxiomCommitLogStdStrVecRef);
+	} else if (Euclid.ProofStep3DStdStrVec.size()) {
 		std::cout << "Partial Proof Found." << std::endl;
-		Euclid.PrintPath(ProofStep4DStdStrVec);
-		Euclid.PrintPath(AxiomCommitLogStdStrVec);
+		Euclid.PrintPath(Euclid.ProofStep3DStdStrVec);
+		Euclid.PrintPath(Euclid.AxiomCommitLogStdStrVecRef);
 	} else {
 		std::cout << "No Proof Found." << std::endl;
 	}
