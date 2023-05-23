@@ -2,8 +2,6 @@
 #include <string>
 #include <chrono>
 #include <Euclid.h>
-//#include <Euclid.TestCase.246.h>
-//#include <Euclid.16.Boost.Support.No.Strings.h>
 
 int main()
 {
