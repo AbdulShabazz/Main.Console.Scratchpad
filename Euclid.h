@@ -88,7 +88,7 @@ print_path(const T& vector) noexcept {
 
   VERSION
 	  Major.Minor.Bugfix.Patch
-	  12.0.0.0 // Euclid.9.h // Euclid.4.h //
+	  12.0.0.0
 
   DESCRIPTION
 	Theorem prover written in C++23. Ported from ECMA-262 JavaScript (A grammar reduction term-rewriting system)
