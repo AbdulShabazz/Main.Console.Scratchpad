@@ -63,14 +63,14 @@ std::size_t _depth {};
 // Handle case when T is not a vector
 template <typename T>
 typename std::enable_if<!std::is_same<T, std::vector<typename T::value_type>>::value, void>::type
-print_path(const T& element) {
+print_path(const T& element) noexcept {
 	std::cout << " " << element << " ";
 };
 
 // Handle case when T is a vector
 template <typename T>
 typename std::enable_if<std::is_same<T, std::vector<typename T::value_type>>::value, void>::type
-print_path(const T& vector) {
+print_path(const T& vector) noexcept {
 	// Add a newline and indent each level of depth
 	std::cout << std::string(_depth % 2, '\n') << "{ ";
 	_depth++;
@@ -443,8 +443,7 @@ namespace Euclid_Prover
 		std::vector<
 		std::vector<
 		std::vector<
-		std::vector<
-		std::string>>>>&
+		std::string>>>&
 		OutProofStepStdStrVecRef,
 
 		std::vector<
@@ -822,34 +821,19 @@ namespace Euclid_Prover
 						std::vector<
 						std::vector<
 						std::string>>>&
-						InAxiomsStdStrVec/*,
-
-						std::vector<
-						std::vector<
-						std::string>>&
-						OutAxiomCommitLogStdStrVecRef,
-
-						std::vector<
-						std::vector<
-						std::vector<
-						std::string>>>&
-						OutTheoremStdStrVec*/
+						InAxiomsStdStrVec
 					) -> bool
 				{
 					__stdtracein__("ProofVerified");
 
 					bool ReturnStatusFlag{true};
 
-					//OutTheoremStdStrVec.emplace_back(InTheoremStdStrVec);
-					
-					OutProofStepStdStrVecRef.push_back({ InTheoremStdStrVec });
-
-					//print_path(OutProofStepStdStrVecRef);
-
 					std::vector<
 						std::vector<
 						std::string>>
 						TempTheoremStdStrVec{ InTheoremStdStrVec };
+
+					//print_path(InTheoremStdStrVec);
 
 					std::vector<
 						std::string>
@@ -867,6 +851,8 @@ namespace Euclid_Prover
 
 					std::size_t i { ProofStackUInt64 };
 
+					OutProofStepStdStrVecRef.push_back(TempTheoremStdStrVec);
+
 					while (i < InTheoremUInt64.size())
 					{
 						const std::size_t& opcode = std::size_t{ InTheoremUInt64[i++] };
@@ -877,7 +863,7 @@ namespace Euclid_Prover
 							case 0x00:
 							{ // "lhsreduce" operation //
 								__stdlog__({ "lhs_reduce via Axiom_", std::to_string(guid) });
-								//ReturnStatusFlag =
+								ReturnStatusFlag =
 									Rewrite (TempTheoremStdStrVec[LHS], InAxiomsStdStrVec[guid][LHS], InAxiomsStdStrVec[guid][RHS]);
 								TempAxiomCommitLogStdStrVecRef.emplace_back("lhs_reduce via Axiom_" + std::to_string(guid));
 								break;
@@ -885,7 +871,7 @@ namespace Euclid_Prover
 							case 0x01:
 							{ // "lhsexpand" operation //
 								__stdlog__({ "lhs_expand via Axiom_", std::to_string(guid) });
-								//ReturnStatusFlag =
+								ReturnStatusFlag =
 									Rewrite (TempTheoremStdStrVec[LHS], InAxiomsStdStrVec[guid][RHS], InAxiomsStdStrVec[guid][LHS]);
 								TempAxiomCommitLogStdStrVecRef.emplace_back("lhs_expand via Axiom_" + std::to_string(guid));
 								break;
@@ -893,7 +879,7 @@ namespace Euclid_Prover
 							case 0x02:
 							{ // "rhsreduce" operation //
 								__stdlog__({ "rhs_reduce via Axiom_", std::to_string(guid) });
-								//ReturnStatusFlag =
+								ReturnStatusFlag =
 									Rewrite (TempTheoremStdStrVec[RHS], InAxiomsStdStrVec[guid][LHS], InAxiomsStdStrVec[guid][RHS]);
 								TempAxiomCommitLogStdStrVecRef.emplace_back("rhs_reduce via Axiom_" + std::to_string(guid));
 								break;
@@ -901,7 +887,7 @@ namespace Euclid_Prover
 							case 0x03:
 							{ // "rhsexpand" operation //
 								__stdlog__({ "rhs_expand via Axiom_", std::to_string(guid) });
-								//ReturnStatusFlag =
+								ReturnStatusFlag =
 									Rewrite (TempTheoremStdStrVec[RHS], InAxiomsStdStrVec[guid][RHS], InAxiomsStdStrVec[guid][LHS]);
 								TempAxiomCommitLogStdStrVecRef.emplace_back("rhs_expand via Axiom_" + std::to_string(guid));
 								break;
@@ -913,15 +899,16 @@ namespace Euclid_Prover
 								break;
 							}
 						} // end switch(opcode)
-						//OutProofStepStdStrVecRef.emplace_back(TempTheoremStdStrVec);
+						OutProofStepStdStrVecRef.push_back(TempTheoremStdStrVec);
 
 						//print_path(TempTheoremStdStrVec);
 
 						if (!ReturnStatusFlag) 
 							break;
 					}
-					//OutProofStepStdStrVecRef.emplace_back(TempTheoremStdStrVec);
-					OutAxiomCommitLogStdStrVecRef.emplace_back(TempAxiomCommitLogStdStrVecRef);
+					OutAxiomCommitLogStdStrVecRef.push_back(TempAxiomCommitLogStdStrVecRef);
+
+					//print_path(OutProofStepStdStrVecRef);
 
 					// If TentativeProofVerified is unable to finish the loop, return false.
 					__stdtraceout__("ProofVerified");
@@ -930,24 +917,15 @@ namespace Euclid_Prover
 
 				//QED = true;
 				//break;
-				/*
-				std::vector<std::string> TempAxiomCommitLog_StdStrVec {};
 
-				std::vector<
-					std::vector<
-					std::vector<
-					std::string>>>
-					OutTheoremStdStrVec;
-				*/
-				if (
-					ProofVerified
+				if 
 					(
-						Theorem,
-						InTheoremStdStrVec,
-						InAxiomsStdStrVec//,
-						//OutAxiomCommitLogStdStrVecRef,
-						//OutTheoremStdStrVec
-					)
+						ProofVerified
+						(
+							Theorem,
+							InTheoremStdStrVec,
+							InAxiomsStdStrVec
+						)
 					)
 				{
 					++TotalProofsFound_UInt64;
@@ -1121,7 +1099,7 @@ namespace Euclid_Prover
 
 		//*** End: Core Proof Engine (Loop) *** //
 
-		if (!QED)
+		/*if (!QED)
 		{
 			if (TempProofSteps.size())
 			{
@@ -1129,11 +1107,13 @@ namespace Euclid_Prover
 			} else {
 				__stdlog__({ "No Proof Found." });
 			}
-		}
+		}*/
 
 		__stdtraceout__("STDThreadProve\n");
 
 		OutProofFound_FlagRef = QED;
+
+		//print_path(OutProofStepStdStrVecRef);
 
 		OutStatusReadyFlag = true; /* Set the Status Variable, last */
 
@@ -1244,6 +1224,17 @@ namespace Euclid_Prover
 
 		bool ProofFoundFlag{};
 		bool StatusReadyFlag{};
+
+		std::vector<
+			std::vector<
+			std::vector<
+			std::string>>>
+			ProofStep3DStdStrVec;
+
+		std::vector<
+			std::vector<
+			std::string>>
+			AxiomCommitLogStdStrVecRef;
 
 		bool Axiom
 		(
@@ -1380,44 +1371,35 @@ namespace Euclid_Prover
 			std::vector<
 			std::vector<
 			std::string>>&
-			InProofVecConstCharRef,
-
-			std::vector<
-			std::vector<
-			std::vector<
-			std::vector<
-			std::string>>>>&
-			OutPath4DStdStrVecRef,
-
-			std::vector<
-			std::vector<
-			std::string>>&
-			OutAxiomCommitLogStdStrVecRef
+			InProofStdStrVecRef
 		)
 		{
 			__stdtracein__("Prove");
 
 			Reset();
 
-			ProofStep4DStdStrVec = OutPath4DStdStrVecRef;
-			TheoremStdStrVec = InProofVecConstCharRef;
+			//ProofStep3DStdStrVec = OutPath3DStdStrVecRef;
+			//TheoremStdStrVec = InProofStdStrVecRef;
+			//AxiomCommitLogStdStrVecRef = OutAxiomCommitLogStdStrVecRef;
 			/*
 			{
 				{"1", "+", "1", "+", "1", "+", "1"}, // (lhs) Prime Composite: 1585615607 //
 				{"4"} // (rhs) Prime Composite: 29 //
 			};
 			*/
-			th = std::async
+			/*th = */std::async
 			(
 				std::launch::async,
 				__Prove__,
-				std::cref(TheoremStdStrVec),
+				std::cref(InProofStdStrVecRef),
 				std::cref(AxiomsStdStrVec),
 				std::ref(ProofFoundFlag),
 				std::ref(StatusReadyFlag),
-				std::ref(ProofStep4DStdStrVec),
-				std::ref(OutAxiomCommitLogStdStrVecRef)
+				std::ref(ProofStep3DStdStrVec),
+				std::ref(AxiomCommitLogStdStrVecRef)
 			);
+			//th.get();
+			//print_path(ProofStep3DStdStrVec);
 
 			__stdtraceout__("Prove");
 
@@ -1429,19 +1411,7 @@ namespace Euclid_Prover
 			std::initializer_list<
 			std::vector<
 			std::string>>&
-			InProofInitListConstStdStrVecRef,
-
-			std::vector<
-			std::vector<
-			std::vector<
-			std::vector<
-			std::string>>>>&
-			OutPath4DStdStrVecRef,
-
-			std::vector<
-			std::vector<
-			std::string>>&
-			OutAxiomCommitLogStdStrVecRef
+			InProofInitListConstStdStrVecRef
 		)
 		{
 			const
@@ -1450,93 +1420,20 @@ namespace Euclid_Prover
 				std::string>>&
 				InProofVecConstCharRef{ InProofInitListConstStdStrVecRef };
 
-			Prove
-			(
-				InProofVecConstCharRef,
-				OutPath4DStdStrVecRef,
-				OutAxiomCommitLogStdStrVecRef
-			);
+			Prove(InProofVecConstCharRef);
 		}
 
 		bool StatusReady()
 		{
 			__stdtracein__("StatusReady");
 
-			th.get();
+			if (th.valid())
+				th.get();
+
 			__stdtraceout__("StatusReady");
-			return true;
-		}
-		/*
-		void PrintPath(const std::vector<std::vector<std::string>>& OutAxiomCommitLogStdStrVecRef)
-		{
-			const std::size_t I = OutAxiomCommitLogStdStrVecRef.size();
-			std::cout << "AxiomCommitLogStdSrVec = {\n";
-			for (std::size_t i = 0; i < I; ++i)
-			{
-				std::cout << "{ ";
-				bool Delimited{};
-				for (const std::string& str : OutAxiomCommitLogStdStrVecRef[i])
-				{
-					std::cout << ( Delimited ? ", " : "" ) << str;
-					Delimited = true;
-				}
-				if (i + 1 < I)
-				{
-					std::cout << " },\n";
-				} else {
-					std::cout << " }\n";
-				}
-			}
-			std::cout << "}\n";
+			return StatusReadyFlag;
 		}
 
-		void PrintPath(const std::vector<
-			std::vector<
-			std::vector<
-			std::vector<
-			std::string>>>>&OutProofStep4DStdStrVec)
-		{
-			std::cout << "Proofstep = {\n";
-			for (size_t w = 0; w < OutProofStep4DStdStrVec.size(); ++w)
-			{
-				std::cout << "{\n";
-				for (size_t x = 0; x < OutProofStep4DStdStrVec[w].size(); ++x)
-				{
-					std::cout << "{\n";
-					const std::size_t I = OutProofStep4DStdStrVec[w][x].size();
-					for (std::size_t i = 0; i < I; ++i)
-					{
-						std::cout << "{ ";
-						bool Delimited{};
-						for (const std::string& str : OutProofStep4DStdStrVec[w][x][i])
-						{
-							std::cout << ( Delimited ? ", " : "" ) << str;
-							Delimited = true;
-						}
-						if (i + 1 < I)
-						{
-							std::cout << " },\n";
-						} else {
-							std::cout << " }";
-						}
-					}
-					if (x + 1 < OutProofStep4DStdStrVec[w].size())
-					{
-						std::cout << "\n},\n";
-					} else {
-						std::cout << "\n}\n";
-					}
-				}
-				if (w + 1 < OutProofStep4DStdStrVec.size())
-				{
-					std::cout << "},\n";
-				} else {
-					std::cout << "}\n";
-				}
-			}
-			std::cout << "}\n";
-		}
-*/
 		// Handle case when T is not a vector
 		template <typename T>
 		typename std::enable_if<!std::is_same<T, std::vector<typename T::value_type>>::value, void>::type
@@ -1578,13 +1475,6 @@ namespace Euclid_Prover
 			std::vector<
 			std::string>>
 			TheoremStdStrVec{};
-
-		std::vector<
-			std::vector<
-			std::vector<
-			std::vector<
-			std::string>>>>
-			ProofStep4DStdStrVec{};
 
 		void Reset()
 		{
