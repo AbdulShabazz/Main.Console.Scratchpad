@@ -185,23 +185,6 @@ print_path(const T& vector) noexcept {
 	Usage Example C++
 
 	```c++
-
-		std::vector<
-			std::vector<
-			std::vector<
-			std::vector<
-			std::string>>>>
-
-			// Instantiate ProofStep4DStdStrVec[proof][step][lhs/rhs][token]
-			ProofStep4DStdStrVec;
-
-		std::vector<
-			std::vector<
-			std::string>>
-
-			// Instantiate AxiomCommitLogStdStrVec[proof][step]
-			AxiomCommitLogStdStrVec;
-
 		// Instantiate Prover (module)
 
 		using EuclidProverClass =
@@ -277,13 +260,13 @@ print_path(const T& vector) noexcept {
 		{
 			if (Euclid.ProofFoundFlag)
 			{
-				std::cout << "Proof Found." << std::endl;
-				ProofStep_4DStdStrVec;
-				AxiomCommitLog_StdStrVec;
-			} else if (ProofStep_4DStdStrVec.size ()) {
+				std::cout << "Proof Found. (QED)" << std::endl;
+				Euclid.PrintPath(Euclid.ProofStep3DStdStrVec);
+				Euclid.PrintPath(Euclid.AxiomCommitLogStdStrVecRef);
+			} else if (Euclid.ProofStep3DStdStrVec.size()) {
 				std::cout << "Partial Proof Found." << std::endl;
-				ProofStep_4DStdStrVec;
-				AxiomCommitLog_StdStrVec;
+				Euclid.PrintPath(Euclid.ProofStep3DStdStrVec);
+				Euclid.PrintPath(Euclid.AxiomCommitLogStdStrVecRef);
 			} else {
 				std::cout << "No Proof Found." << std::endl;
 			}
@@ -291,11 +274,6 @@ print_path(const T& vector) noexcept {
 			std::cout << "No Proof Found." << std::endl;
 		}
 		* /
-
-		while (!Euclid.StatusReadyFlag)
-		{
-			std::this_thread::yield();
-		}
 
 		while (!Euclid.StatusReadyFlag)
 		{
