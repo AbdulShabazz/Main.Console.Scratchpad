@@ -2,6 +2,7 @@
 #include <string>
 #include <chrono>
 #include <Euclid.h>
+#include <TestCase.246.h>
 
 int main()
 {
@@ -12,30 +13,8 @@ int main()
 
 	EuclidProverClass Euclid;
 
-	Euclid.Axioms
-	(
-		{
-			// Axiom_00
-			{
-				{ "1", "+", "1" },  // lhs
-				{ "2" } // rhs
-			},
-
-			// Axiom_01
-		   {
-				{ "2", "+", "2" }, // lhs
-				{ "4" } // rhs
-			}
-		}
-	);
-
-	Euclid.Prove
-	(
-		{
-			{ "1", "+", "1", "+", "1", "+", "1" }, // lhs
-			{ "4" } // rhs
-		}
-	);
+	Euclid.Axioms(Axioms_0001);
+	Euclid.Prove(Theorem_0001);
 
 	const auto start_time_chrono = std::chrono::high_resolution_clock::now();
 
@@ -49,12 +28,12 @@ int main()
 	if (Euclid.ProofFoundFlag)
 	{
 		std::cout << "Proof Found. (QED)" << std::endl;
-		Euclid.PrintPath(Euclid.ProofStep3DStdStrVec);
-		Euclid.PrintPath(Euclid.AxiomCommitLogStdStrVecRef);
+		//Euclid.PrintPath(Euclid.ProofStep3DStdStrVec);
+		//Euclid.PrintPath(Euclid.AxiomCommitLogStdStrVecRef);
 	} else if (Euclid.ProofStep3DStdStrVec.size()) {
 		std::cout << "Partial Proof Found." << std::endl;
-		Euclid.PrintPath(Euclid.ProofStep3DStdStrVec);
-		Euclid.PrintPath(Euclid.AxiomCommitLogStdStrVecRef);
+		//Euclid.PrintPath(Euclid.ProofStep3DStdStrVec);
+		//Euclid.PrintPath(Euclid.AxiomCommitLogStdStrVecRef);
 	} else {
 		std::cout << "No Proof Found." << std::endl;
 	}
