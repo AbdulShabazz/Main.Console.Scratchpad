@@ -326,10 +326,11 @@ print_path(const T& vector) noexcept {
 #include <initializer_list>
 #include <queue>
 #include <unordered_map>
-#include <future>
 #include <algorithm>
 #include <iterator>
 #include <type_traits>
+#include <future>
+#include <mutex>
 #include <boost/multiprecision/cpp_int.hpp> 
 
 namespace Euclid_Prover
@@ -434,6 +435,8 @@ namespace Euclid_Prover
 	{
 		__stdtracein__("STDThreadProve");
 
+		std::mutex mtx;
+
 		TempProofSteps = {};
 
 		bool QED{};
@@ -441,21 +444,6 @@ namespace Euclid_Prover
 		BigInt128_t GUID_UInt64{};
 
 		std::vector<BigInt128_t> Theorem_UInt64Vec;
-
-		auto Power = [] (BigInt128_t base, BigInt128_t exponent) -> BigInt128_t
-		{
-			BigInt128_t result = 1;
-			while (exponent > 0) {
-				// If exponent is odd
-				if (exponent & 1) {
-					result = result * base;
-				}
-				// halve the exponent
-				exponent = exponent >> 1;
-				base = base * base;
-			}
-			return result;
-		};
 
 		auto PopulateTheoremVec =
 			[
@@ -1114,6 +1102,7 @@ namespace Euclid_Prover
 
 		//print_path(OutProofStepStdStrVecRef);
 
+		std::lock_guard<std::mutex> lock(mtx);
 		OutStatusReadyFlag = true; /* Set the Status Variable, last */
 
 		return true;
@@ -1386,7 +1375,8 @@ namespace Euclid_Prover
 				{"4"} // (rhs) Prime Composite: 29 //
 			};
 			*/
-			/*th = */std::async
+
+			std::async
 			(
 				std::launch::async,
 				__Prove__,
@@ -1397,8 +1387,6 @@ namespace Euclid_Prover
 				std::ref(ProofStep3DStdStrVec),
 				std::ref(AxiomCommitLogStdStrVecRef)
 			);
-			//th.get();
-			//print_path(ProofStep3DStdStrVec);
 
 			__stdtraceout__("Prove");
 
@@ -1425,9 +1413,6 @@ namespace Euclid_Prover
 		bool StatusReady()
 		{
 			__stdtracein__("StatusReady");
-
-			if (th.valid())
-				th.get();
 
 			__stdtraceout__("StatusReady");
 			return StatusReadyFlag;
@@ -1462,7 +1447,7 @@ namespace Euclid_Prover
 		const std::string _closeBrace;
 
 		//std::thread th;
-		std::future<int> th;
+		//std::vector<std::future<int>> th;
 
 		std::vector<
 			std::vector<
