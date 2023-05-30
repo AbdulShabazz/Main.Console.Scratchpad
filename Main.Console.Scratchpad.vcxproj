@@ -159,6 +159,9 @@
     <Text Include="Notes.txt" />
     <Text Include="~reserve.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TestCase.246.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
