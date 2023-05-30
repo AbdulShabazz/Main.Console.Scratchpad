@@ -1,4 +1,47 @@
 
+//
+	/*
+	Euclid.Axioms
+	(
+		{
+			// Axiom_00
+			{
+				{ "1", "+", "1" },  // lhs
+				{ "2" } // rhs
+			},
+
+			// Axiom_01
+		   {
+				{ "2", "+", "2" }, // lhs
+				{ "4" } // rhs
+			}
+		}
+	);
+
+	Euclid.Prove
+	(
+		{
+			{ "1", "+", "1", "+", "1", "+", "1" }, // lhs
+			{ "4" } // rhs
+		}
+	);
+	*/
+//
+		auto Power = [] (BigInt128_t base, BigInt128_t exponent) -> BigInt128_t
+		{
+			BigInt128_t result = 1;
+			while (exponent > 0) {
+				// If exponent is odd
+				if (exponent & 1) {
+					result = result * base;
+				}
+				// halve the exponent
+				exponent = exponent >> 1;
+				base = base * base;
+			}
+			return result;
+		};
+//
 				/*
 				std::vector<std::string> TempAxiomCommitLog_StdStrVec {};
 
