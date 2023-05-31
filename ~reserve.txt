@@ -1,5 +1,20 @@
 
 //
+	BigInt128_t Power(BigInt128_t base, BigInt128_t exponent)
+	{
+		BigInt128_t result = 1;
+		while (exponent > 0) {
+			// If exponent is odd
+			if (exponent & 1) {
+				result = result * base;
+			}
+			// halve the exponent
+			exponent = exponent >> 1;
+			base = base * base;
+		}
+		return result;
+	}
+//
 	/*
 	Euclid.Axioms
 	(
